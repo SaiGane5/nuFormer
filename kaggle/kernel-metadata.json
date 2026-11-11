@@ -1,0 +1,20 @@
+{
+  "id": "hellofriend375/nuformer-qwen3-reco",
+  "title": "nuFormer Qwen3 Reco",
+  "code_file": "nuformer_kaggle.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "hellofriend375/nuformer-synthetic-transactions"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3/transformers/1.7b/1"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "docker_image_pinning_type": "latest"
+}

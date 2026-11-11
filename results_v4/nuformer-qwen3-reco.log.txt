@@ -1,0 +1,181 @@
+[11:26:08] GPUs: ['Tesla T4', 'Tesla T4']
+[11:26:34] users (20000, 28) tx (4251789, 5)
+[11:26:48] prep done {'prep_sec': 16.0, 'n_users': 20000, 'n_tx': 4251789, 'unique_descriptions': 245273, 'tokens_per_tx_mean': 13.74, 'tx_in_context_mean': 36.8, 'tx_in_context_median': 37.0, 'seq_len_mean': 505.4, 'amount_edges_log1p': [2.345, 2.809, 3.078, 3.325, 3.499, 3.675, 3.799, 3.955, 4.106, 4.253, 4.396, 4.539, 4.652, 4.797, 4.95, 5.116, 5.307, 5.548, 5.921, 7.0], 'example_tokens': ['<DAY_8>', '<WD_5>', 'NET', 'FL', 'IX', '.COM', '<TX>', '<SIGN_OUT>', '<AMT_11>', '<MON_11>', '<DAY_10>', '<WD_0>', 'RA', 'IA', ' D', 'RO', 'G', 'AS', 'IL', ' C', 'AMP', 'IN', 'AS', '<TX>', '<SIGN_OUT>', '<AMT_18>', '<MON_11>', '<DAY_10>', '<WD_0>', 'PA', 'O', ' DE', ' AC', 'UC', 'AR', ' ', '3', '9', '0', '0']}
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 1/311 [00:03<19:37,  3.80s/it]Loading weights:   0%|          | 1/311 [00:03<19:42,  3.81s/it]Loading weights:   1%|          | 2/311 [00:04<09:38,  1.87s/it]Loading weights:   1%|          | 2/311 [00:04<09:37,  1.87s/it]Loading weights:  44%|████▎     | 136/311 [00:04<00:03, 55.61it/s]Loading weights:  44%|████▎     | 136/311 [00:04<00:03, 55.38it/s]Loading weights:  53%|█████▎    | 166/311 [00:04<00:02, 59.35it/s]Loading weights:  53%|█████▎    | 165/311 [00:04<00:02, 58.62it/s]Loading weights:  60%|█████▉    | 186/311 [00:05<00:02, 59.48it/s]Loading weights:  60%|██████    | 187/311 [00:05<00:02, 59.99it/s]Loading weights:  65%|██████▍   | 202/311 [00:05<00:01, 56.68it/s]Loading weights:  65%|██████▌   | 203/311 [00:05<00:01, 56.63it/s]Loading weights:  69%|██████▉   | 214/311 [00:05<00:01, 57.61it/s]Loading weights:  69%|██████▉   | 215/311 [00:05<00:01, 56.29it/s]Loading weights:  72%|███████▏  | 224/311 [00:05<00:01, 56.98it/s]Loading weights:  72%|███████▏  | 225/311 [00:05<00:01, 58.08it/s]Loading weights:  76%|███████▌  | 235/311 [00:06<00:01, 57.44it/s]Loading weights:  76%|███████▌  | 235/311 [00:06<00:01, 57.04it/s]Loading weights:  79%|███████▉  | 246/311 [00:06<00:01, 59.61it/s]Loading weights:  79%|███████▉  | 246/311 [00:06<00:01, 59.55it/s]Loading weights:  83%|████████▎ | 257/311 [00:06<00:00, 60.78it/s]Loading weights:  83%|████████▎ | 257/311 [00:06<00:00, 60.78it/s]Loading weights:  86%|████████▌ | 268/311 [00:06<00:00, 59.65it/s]Loading weights:  86%|████████▌ | 268/311 [00:06<00:00, 59.62it/s]Loading weights:  90%|████████▉ | 279/311 [00:06<00:00, 56.77it/s]Loading weights:  90%|████████▉ | 279/311 [00:06<00:00, 56.77it/s]Loading weights:  93%|█████████▎| 290/311 [00:07<00:00, 62.05it/s]Loading weights:  93%|█████████▎| 290/311 [00:07<00:00, 62.00it/s]Loading weights:  97%|█████████▋| 301/311 [00:07<00:00, 62.47it/s]Loading weights:  97%|█████████▋| 301/311 [00:07<00:00, 62.47it/s]Loading weights: 100%|██████████| 311/311 [00:07<00:00, 42.88it/s]
+Loading weights: 100%|██████████| 311/311 [00:07<00:00, 42.99it/s]
+[11:27:10] joint steps_total 415 trainable M 18.33
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+[11:29:28] joint step 10/415 loss 0.5669 13.8s/step
+[11:31:58] joint step 20/415 loss 0.4079 14.4s/step
+[11:34:28] joint step 30/415 loss 0.4299 14.6s/step
+[11:36:58] joint step 40/415 loss 0.4194 14.7s/step
+[11:39:28] joint step 50/415 loss 0.3747 14.8s/step
+[11:41:58] joint step 60/415 loss 0.3363 14.8s/step
+[11:44:27] joint step 70/415 loss 0.3909 14.8s/step
+[11:46:56] joint step 80/415 loss 0.3419 14.8s/step
+[11:49:26] joint step 90/415 loss 0.3632 14.8s/step
+[11:51:55] joint step 100/415 loss 0.3473 14.9s/step
+[11:56:25] joint val AUC 0.6292
+[11:58:10] joint step 110/415 loss 0.4647 16.9s/step
+[12:00:39] joint step 120/415 loss 0.3635 16.7s/step
+[12:03:08] joint step 130/415 loss 0.4739 16.6s/step
+[12:05:37] joint step 140/415 loss 0.359 16.5s/step
+[12:08:06] joint step 150/415 loss 0.3188 16.4s/step
+[12:10:35] joint step 160/415 loss 0.2865 16.3s/step
+[12:13:04] joint step 170/415 loss 0.2686 16.2s/step
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 1/311 [00:01<05:29,  1.06s/it]Loading weights:  40%|████      | 125/311 [00:01<00:01, 144.35it/s]Loading weights:  60%|█████▉    | 186/311 [00:01<00:00, 168.87it/s]Loading weights:  74%|███████▎  | 229/311 [00:01<00:00, 175.64it/s]Loading weights:  85%|████████▍ | 263/311 [00:01<00:00, 181.31it/s]Loading weights:  94%|█████████▍| 292/311 [00:02<00:00, 177.87it/s]Loading weights: 100%|██████████| 311/311 [00:02<00:00, 150.92it/s]
+[12:13:55] seq steps_total 415 trainable M 17.87
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+[12:15:33] joint step 180/415 loss 0.3531 16.1s/step
+[12:16:23] seq step 10/415 loss 0.5892 14.8s/step
+[12:18:02] joint step 190/415 loss 0.3875 16.1s/step
+[12:18:51] seq step 20/415 loss 0.4169 14.8s/step
+[12:20:32] joint step 200/415 loss 0.359 16.0s/step
+[12:21:19] seq step 30/415 loss 0.4337 14.8s/step
+[12:23:47] seq step 40/415 loss 0.4245 14.8s/step
+[12:25:45] joint val AUC 0.7052
+[12:26:15] seq step 50/415 loss 0.3765 14.8s/step
+[12:26:45] joint step 210/415 loss 0.3578 17.0s/step
+[12:28:42] seq step 60/415 loss 0.3549 14.8s/step
+[12:29:14] joint step 220/415 loss 0.3343 16.9s/step
+[12:31:10] seq step 70/415 loss 0.4005 14.8s/step
+[12:31:43] joint step 230/415 loss 0.3453 16.8s/step
+[12:33:38] seq step 80/415 loss 0.3603 14.8s/step
+[12:34:12] joint step 240/415 loss 0.3853 16.8s/step
+[12:36:05] seq step 90/415 loss 0.3768 14.8s/step
+[12:36:41] joint step 250/415 loss 0.2911 16.7s/step
+[12:38:33] seq step 100/415 loss 0.3384 14.8s/step
+[12:39:09] joint step 260/415 loss 0.3505 16.6s/step
+[12:41:37] joint step 270/415 loss 0.3331 16.5s/step
+[12:42:57] seq val AUC 0.5571
+[12:44:06] joint step 280/415 loss 0.3404 16.5s/step
+[12:44:40] seq step 110/415 loss 0.4995 16.8s/step
+[12:46:34] joint step 290/415 loss 0.2607 16.4s/step
+[12:47:08] seq step 120/415 loss 0.3743 16.6s/step
+[12:49:02] joint step 300/415 loss 0.4052 16.4s/step
+[12:49:36] seq step 130/415 loss 0.4971 16.5s/step
+[12:52:04] seq step 140/415 loss 0.3633 16.3s/step
+[12:54:31] seq step 150/415 loss 0.36 16.2s/step
+[12:55:01] joint val AUC 0.7124
+[12:55:16] joint step 310/415 loss 0.411 17.1s/step
+[12:56:59] seq step 160/415 loss 0.3015 16.1s/step
+[12:57:45] joint step 320/415 loss 0.3455 17.0s/step
+[12:59:27] seq step 170/415 loss 0.2975 16.1s/step
+[13:00:13] joint step 330/415 loss 0.2921 16.9s/step
+[13:01:54] seq step 180/415 loss 0.3657 16.0s/step
+[13:02:42] joint step 340/415 loss 0.3281 16.9s/step
+[13:04:22] seq step 190/415 loss 0.4094 15.9s/step
+[13:05:10] joint step 350/415 loss 0.2976 16.8s/step
+[13:06:50] seq step 200/415 loss 0.3791 15.9s/step
+[13:07:38] joint step 360/415 loss 0.396 16.7s/step
+[13:10:07] joint step 370/415 loss 0.3464 16.7s/step
+[13:11:59] seq val AUC 0.5889
+[13:12:35] joint step 380/415 loss 0.3256 16.6s/step
+[13:12:58] seq step 210/415 loss 0.3962 16.9s/step
+[13:15:04] joint step 390/415 loss 0.3206 16.6s/step
+[13:15:26] seq step 220/415 loss 0.3412 16.8s/step
+[13:17:32] joint step 400/415 loss 0.3072 16.6s/step
+[13:17:54] seq step 230/415 loss 0.3789 16.7s/step
+[13:20:00] joint step 410/415 loss 0.292 16.5s/step
+[13:20:23] seq step 240/415 loss 0.4381 16.6s/step
+[13:22:51] seq step 250/415 loss 0.3474 16.5s/step
+[13:24:14] joint val AUC 0.7182
+[13:25:19] seq step 260/415 loss 0.3518 16.5s/step
+[13:27:47] seq step 270/415 loss 0.3765 16.4s/step
+[13:30:15] seq step 280/415 loss 0.3835 16.4s/step
+[13:32:43] seq step 290/415 loss 0.3206 16.3s/step
+[13:35:11] seq step 300/415 loss 0.4483 16.3s/step
+[13:41:05] seq val AUC 0.6191
+[13:41:20] seq step 310/415 loss 0.4049 16.9s/step
+[13:43:47] seq step 320/415 loss 0.3898 16.9s/step
+[13:46:16] seq step 330/415 loss 0.3083 16.8s/step
+[13:48:44] seq step 340/415 loss 0.3734 16.7s/step
+[13:51:12] seq step 350/415 loss 0.3278 16.7s/step
+[13:53:41] seq step 360/415 loss 0.4395 16.6s/step
+[13:56:09] seq step 370/415 loss 0.3711 16.6s/step
+[13:58:37] seq step 380/415 loss 0.3584 16.5s/step
+[14:01:06] seq step 390/415 loss 0.3458 16.5s/step
+[14:03:33] seq step 400/415 loss 0.3411 16.4s/step
+[14:06:02] seq step 410/415 loss 0.331 16.4s/step
+[14:10:11] seq val AUC 0.6232
+[14:32:43] joint done {'mode': 'joint', 'gpu': 'Tesla T4', 'trainable_params_M': 18.33, 'val_auc_curve': [(103, 0.6292), (206, 0.7052), (309, 0.7124), (412, 0.7182)], 'train_sec': 7062.4, 'steps': 414, 'best_val_auc': 0.7182, 'peak_mem_GB': 5.35, 'infer_sec': 4071.0}
+[15:17:27] seq done {'mode': 'seq', 'gpu': 'Tesla T4', 'frozen_embed_sec': 2819.5, 'trainable_params_M': 17.87, 'val_auc_curve': [(103, 0.5571), (206, 0.5889), (309, 0.6191), (412, 0.6232)], 'train_sec': 7013.1, 'steps': 414, 'best_val_auc': 0.6232, 'peak_mem_GB': 5.53, 'infer_sec': 3999.0}
+[15:17:29] worker return codes [0, 0]
+[15:17:38] LightGBM tabular (baseline) {'test_auc': 0.7653, 'test_pr_auc': 0.3719, 'ranking': {'hit@1': 0.5605, 'hit@2': 0.7974, 'ndcg@3': 0.8563, 'spearman': 0.6294}, 'trees': 293}
+[15:17:44] Frozen Qwen3 emb + tabular -> LightGBM (no fine-tune) {'test_auc': 0.7593, 'test_pr_auc': 0.3767, 'ranking': {'hit@1': 0.5338, 'hit@2': 0.7682, 'ndcg@3': 0.8358, 'spearman': 0.5898}, 'trees': 102}
+[15:17:49] Late fusion: LoRA-seq emb + tabular -> LightGBM {'test_auc': 0.762, 'test_pr_auc': 0.3844, 'ranking': {'hit@1': 0.5307, 'hit@2': 0.7631, 'ndcg@3': 0.8375, 'spearman': 0.589}, 'trees': 92}
+[15:18:04] REPORT {
+ "oracle (true propensity)": {
+  "test_auc": 0.8672,
+  "rel_auc_lift_vs_lgbm_%": 13.32
+ },
+ "LightGBM tabular (baseline)": {
+  "test_auc": 0.7653,
+  "ranking": {
+   "hit@1": 0.5605,
+   "hit@2": 0.7974,
+   "ndcg@3": 0.8563,
+   "spearman": 0.6294
+  },
+  "rel_auc_lift_vs_lgbm_%": 0.0
+ },
+ "Frozen Qwen3 emb + tabular -> LightGBM (no fine-tune)": {
+  "test_auc": 0.7593,
+  "ranking": {
+   "hit@1": 0.5338,
+   "hit@2": 0.7682,
+   "ndcg@3": 0.8358,
+   "spearman": 0.5898
+  },
+  "rel_auc_lift_vs_lgbm_%": -0.78
+ },
+ "Late fusion: LoRA-seq emb + tabular -> LightGBM": {
+  "test_auc": 0.762,
+  "ranking": {
+   "hit@1": 0.5307,
+   "hit@2": 0.7631,
+   "ndcg@3": 0.8375,
+   "spearman": 0.589
+  },
+  "rel_auc_lift_vs_lgbm_%": -0.43
+ },
+ "LoRA Qwen3 sequence + offer (no tabular)": {
+  "test_auc": 0.6225,
+  "ranking": {
+   "hit@1": 0.1712,
+   "hit@2": 0.3304,
+   "ndcg@3": 0.4892,
+   "spearman": -0.2155
+  },
+  "rel_auc_lift_vs_lgbm_%": -18.66
+ },
+ "nuFormer joint fusion (LoRA Qwen3 + DCNv2/PLR)": {
+  "test_auc": 0.7357,
+  "ranking": {
+   "hit@1": 0.4417,
+   "hit@2": 0.6968,
+   "ndcg@3": 0.7798,
+   "spearman": 0.4982
+  },
+  "rel_auc_lift_vs_lgbm_%": -3.87
+ },
+ "DCNv2+PLR tabular only": {
+  "test_auc": 0.733,
+  "ranking": {
+   "hit@1": 0.4457,
+   "hit@2": 0.6954,
+   "ndcg@3": 0.7976,
+   "spearman": 0.5249
+  },
+  "rel_auc_lift_vs_lgbm_%": -4.22
+ }
+}
+[15:18:04] total minutes 231.9
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __script__.ipynb to html
+[NbConvertApp] Writing 463420 bytes to __results__.html

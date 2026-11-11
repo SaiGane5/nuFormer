@@ -1,0 +1,10 @@
+numpy
+pandas
+pyarrow
+scipy
+scikit-learn
+lightgbm
+matplotlib
+transformers>=4.51
+peft
+accelerate

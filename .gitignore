@@ -1,0 +1,23 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+# generated data, run outputs and checkpoints
+data/
+data_*/
+out*/
+*.parquet
+*.pt
+*.safetensors
+*.log
+# credentials
+kaggle.json
+.env
+# LaTeX build files
+*.aux
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
