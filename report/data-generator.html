@@ -1,0 +1,742 @@
+<title>Synthetic Bank Customer Generator</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column (max 1040px). A four-stage pipeline strip, then twelve rule cards grouped by stage, then a tabbed "four customers" showcase printed like bank statements. */
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --ink: #161a2c;
+  --ink-2: #4a5170;
+  --ink-3: #7a809a;
+  --rule: #dfe2ee;
+  --rule-2: #eceef6;
+  --accent: #4338ca;
+  --accent-soft: #e8e7fb;
+  --event: #b45309;
+  --event-soft: #fdf1e3;
+  --pos: #047857;
+  --neg: #b42318;
+  --bar: #c9cbf3;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10121c; --surface: #181b29; --ink: #e9eaf3; --ink-2: #b2b6cc; --ink-3: #82879f;
+    --rule: #2b2f44; --rule-2: #222537; --accent: #a5a1ff; --accent-soft: #26244a;
+    --event: #f0a64b; --event-soft: #3a2a15; --pos: #4cc79a; --neg: #ff8a7a; --bar: #4b4790;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10121c; --surface: #181b29; --ink: #e9eaf3; --ink-2: #b2b6cc; --ink-3: #82879f;
+  --rule: #2b2f44; --rule-2: #222537; --accent: #a5a1ff; --accent-soft: #26244a;
+  --event: #f0a64b; --event-soft: #3a2a15; --pos: #4cc79a; --neg: #ff8a7a; --bar: #4b4790;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.6; margin: 0;
+}
+.wrap {
+  max-width: 1040px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; font-weight: 700; }
+h2 { font-size: 24px; line-height: 1.25; font-weight: 600; }
+h3 { font-size: 17px; line-height: 1.3; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--ink-2); }
+.small { font-size: 13px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+code { background: var(--rule-2); padding: 1px 5px; border-radius: 4px; }
+
+/* header */
+header { display: flex; flex-direction: column; gap: 14px; }
+header .lede { font-size: 18px; color: var(--ink-2); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+.facts b { font-family: var(--font-display); font-size: 20px; color: var(--ink); font-weight: 600; margin-right: 6px; font-variant-numeric: tabular-nums; }
+
+/* pipeline */
+.pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stage { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+.stage:not(:last-child)::after {
+  content: ""; position: absolute; right: -10px; top: 26px; width: 8px; height: 8px;
+  border-top: 2px solid var(--ink-3); border-right: 2px solid var(--ink-3); transform: rotate(45deg);
+}
+.stage .q { font-size: 13px; color: var(--ink-3); }
+.stage ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.stage li a { display: flex; gap: 8px; color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.4; padding: 3px 0; }
+.stage li a:hover span:last-child, .stage li a:focus-visible span:last-child { color: var(--accent); text-decoration: underline; }
+.num { font-family: var(--font-mono); font-size: 12px; color: var(--accent); min-width: 20px; padding-top: 2px; font-variant-numeric: tabular-nums; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* stage sections */
+.stage-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; scroll-margin-top: 16px; }
+.card.wide { grid-column: 1 / -1; }
+.card-title { display: flex; gap: 10px; align-items: baseline; }
+.card .rule { font-size: 15px; }
+.knobs { display: flex; flex-wrap: wrap; gap: 6px; }
+.knob { font-family: var(--font-mono); font-size: 12px; background: var(--accent-soft); color: var(--ink); padding: 2px 8px; border-radius: 999px; }
+.why { font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--rule); padding-top: 10px; }
+.why b { color: var(--ink); font-weight: 600; }
+
+/* mini tables */
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--ink-3); font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--rule-2); vertical-align: top; }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+td.mono { font-family: var(--font-mono); font-size: 12px; }
+
+/* heatmap */
+.heat { display: grid; grid-template-columns: 64px repeat(7, minmax(0, 1fr)); gap: 2px; font-size: 11px; font-family: var(--font-mono); max-width: 420px; }
+.heat div { text-align: center; padding: 6px 0; border-radius: 3px; font-variant-numeric: tabular-nums; }
+.heat .lab { text-align: right; padding-right: 6px; color: var(--ink-2); background: none; }
+.heat .top { color: var(--ink-2); background: none; padding: 0 0 2px; }
+.legend { display: flex; gap: 14px; align-items: center; font-size: 12px; color: var(--ink-2); flex-wrap: wrap; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+
+/* bars */
+.bars { display: flex; flex-direction: column; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 48px; gap: 10px; align-items: center; font-size: 13px; }
+.bar-track { height: 12px; background: var(--rule-2); border-radius: 0 4px 4px 0; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+.bar-fill.ev { background: var(--event); }
+.bar-row .v { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: 12px; }
+
+/* calendar strip */
+.cal { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 3px; }
+.cal div { aspect-ratio: 1; max-width: 100%; border-radius: 4px; background: var(--rule-2); font-size: 10px; font-family: var(--font-mono); color: var(--ink-3); display: flex; align-items: flex-start; justify-content: flex-start; padding: 2px 3px; position: relative; }
+.cal div.in { background: color-mix(in srgb, var(--pos) 22%, var(--surface)); color: var(--ink); }
+.cal div.out { background: var(--accent-soft); color: var(--ink); }
+.cal-key { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 4px 16px; font-size: 13px; }
+.cal-key span.d { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); display: inline-block; min-width: 54px; }
+
+/* statement */
+.statement { font-family: var(--font-mono); font-size: 12.5px; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.st-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 96px; gap: 10px; padding: 5px 12px; border-bottom: 1px solid var(--rule-2); align-items: baseline; }
+.st-row:last-child { border-bottom: 0; }
+.st-row .d { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.st-row .a { text-align: right; font-variant-numeric: tabular-nums; }
+.st-row .a.in { color: var(--pos); }
+.st-row .desc { overflow-wrap: anywhere; }
+.st-row .cat { color: var(--ink-3); font-size: 10.5px; margin-left: 8px; letter-spacing: 0.03em; }
+.st-row.hl { background: var(--event-soft); }
+.st-row.ev { background: var(--event-soft); color: var(--event); font-weight: 500; }
+.st-head { display: grid; grid-template-columns: 52px minmax(0, 1fr) 96px; gap: 10px; padding: 7px 12px; background: var(--rule-2); color: var(--ink-3); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+.st-head span:last-child { text-align: right; }
+
+/* before/after desc */
+.desc-flow { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 12.5px; }
+.desc-flow .step { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.desc-flow .k { color: var(--ink-3); font-family: var(--font-body); font-size: 12px; }
+.desc-flow .v { overflow-wrap: anywhere; }
+.trunc { color: var(--neg); }
+
+/* formulas */
+.formula { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; background: var(--rule-2); border-radius: 8px; padding: 12px 14px; overflow-x: auto; white-space: pre; }
+.formula .p { color: var(--accent); font-weight: 500; }
+.formula .e { color: var(--event); }
+
+/* split timeline */
+.split { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+.split div { padding: 8px 0; text-align: center; font-size: 11px; font-family: var(--font-mono); border-radius: 4px; color: var(--ink); }
+.split .tr { background: var(--accent-soft); }
+.split .va { background: color-mix(in srgb, var(--event) 25%, var(--surface)); }
+.split .te { background: color-mix(in srgb, var(--pos) 25%, var(--surface)); }
+.checks { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+
+/* compare */
+.compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.compare h4 { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 6px; }
+
+/* showcase */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font: inherit; font-size: 14px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.tab:hover:not([aria-selected="true"]) { border-color: var(--accent); }
+.show { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; margin-top: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.kv { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 4px 12px; font-size: 13.5px; }
+.kv dt { color: var(--ink-3); }
+.kv dd { margin: 0; }
+.traits { display: flex; flex-direction: column; gap: 5px; }
+.trait { display: grid; grid-template-columns: 92px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 12.5px; }
+.trait .axis { height: 12px; position: relative; background: var(--rule-2); border-radius: 3px; }
+.trait .axis::before { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--ink-3); }
+.trait .tf { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; }
+.trait .v { font-family: var(--font-mono); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.offer { font-size: 13.5px; background: var(--rule-2); border-radius: 8px; padding: 10px 12px; }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--event-soft); color: var(--event); letter-spacing: 0.02em; }
+.note { font-size: 13px; color: var(--ink-2); }
+
+footer { font-size: 13px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+
+@media (max-width: 860px) {
+  .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage::after { display: none; }
+  .cards, .show, .compare { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 460px) {
+  .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .cal { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .bar-row { grid-template-columns: 88px minmax(0, 1fr) 44px; }
+  .st-row, .st-head { grid-template-columns: 40px minmax(0, 1fr) 80px; gap: 6px; padding-inline: 8px; }
+  .kv { grid-template-columns: 96px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">nuFormer project · synthgen/</span>
+  <h1>How the synthetic bank customers are made</h1>
+  <p class="lede">No real bank data was available, so the project builds its own customers from 12 simple rules. Because we wrote the rules, we also know each customer's true chance of taking every product. Real data can never tell you that.</p>
+  <div class="facts">
+    <span><b>20,000</b>customers</span>
+    <span><b>4.25M</b>transactions</span>
+    <span><b>61</b>merchants in 24 categories</span>
+    <span><b>0.87</b>best possible AUC (oracle)</span>
+  </div>
+</header>
+
+<section aria-labelledby="pipe-h">
+  <div class="stage-head">
+    <h2 id="pipe-h">Twelve rules in four stages</h2>
+    <p class="muted">Each stage feeds the next. Click a rule to jump to it.</p>
+  </div>
+  <div class="pipeline">
+    <div class="stage">
+      <h3>Who they are</h3>
+      <span class="q">Hidden traits, never shown to models</span>
+      <ol>
+        <li><a href="#r1"><span class="num">01</span><span>Correlated personality traits</span></a></li>
+        <li><a href="#r2"><span class="num">02</span><span>One life event, often recent</span></a></li>
+      </ol>
+    </div>
+    <div class="stage">
+      <h3>What they spend</h3>
+      <span class="q">150 days of transactions per customer</span>
+      <ol>
+        <li><a href="#r3"><span class="num">03</span><span>A catalogue of 61 merchants</span></a></li>
+        <li><a href="#r4"><span class="num">04</span><span>Fixed monthly calendar</span></a></li>
+        <li><a href="#r5"><span class="num">05</span><span>Random daily spending</span></a></li>
+        <li><a href="#r6"><span class="num">06</span><span>Income sets price and shop</span></a></li>
+        <li><a href="#r7"><span class="num">07</span><span>Trips as bursts</span></a></li>
+        <li><a href="#r8"><span class="num">08</span><span>Messy statement text</span></a></li>
+      </ol>
+    </div>
+    <div class="stage">
+      <h3>What's true</h3>
+      <span class="q">The answer key</span>
+      <ol>
+        <li><a href="#r9"><span class="num">09</span><span>A true chance per product</span></a></li>
+        <li><a href="#r10"><span class="num">10</span><span>One offer, one coin flip</span></a></li>
+      </ol>
+    </div>
+    <div class="stage">
+      <h3>What models see</h3>
+      <span class="q">A fair, imperfect view</span>
+      <ol>
+        <li><a href="#r11"><span class="num">11</span><span>Deliberately lossy profile</span></a></li>
+        <li><a href="#r12"><span class="num">12</span><span>Split by time, then checked</span></a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 1 ============ -->
+<section aria-labelledby="s1-h">
+  <div class="stage-head">
+    <span class="eyebrow">Stage 1</span>
+    <h2 id="s1-h">Who they are</h2>
+  </div>
+  <div class="cards">
+
+    <article class="card" id="r1">
+      <div class="card-title"><span class="num">01</span><h3>Correlated personality traits</h3></div>
+      <p class="rule">Each customer gets seven hidden scores: income, saver, travel, financial stress, digital, discretionary spending and age. They are drawn together, so they hang together the way people do: savers earn more and are rarely stressed.</p>
+      <div class="heat" role="img" aria-label="Correlation between the seven traits">
+        <div class="lab"></div><div class="top">inc</div><div class="top">sav</div><div class="top">trv</div><div class="top">str</div><div class="top">dig</div><div class="top">dsc</div><div class="top">age</div>
+      </div>
+      <div class="legend"><span><i class="sw" style="background:var(--accent)"></i>moves together</span><span><i class="sw" style="background:var(--event)"></i>moves apart</span></div>
+      <div class="knobs"><span class="knob">Gaussian copula (Cholesky)</span><span class="knob">income = R$4,000 × e<sup>0.65·z</sup></span><span class="knob">age = 38 + 11·z</span></div>
+      <p class="why"><b>Why:</b> independent traits would create impossible people, like a stressed high-saver, and make the signal unrealistic. Visible facts (kids, car, rent, payday, subscriptions) are then derived from these traits.</p>
+    </article>
+
+    <article class="card" id="r2">
+      <div class="card-title"><span class="num">02</span><h3>One life event, often recent</h3></div>
+      <p class="rule">60% of customers get one life event. Which one depends on their traits: stressed people get money trouble, younger people get a baby. The date is skewed toward the recent past.</p>
+      <div class="bars" id="ev-bars"></div>
+      <p class="small muted">Share of customers in a 3,000-customer sample. 31.5% had their event in the 30 days before scoring.</p>
+      <div class="knobs"><span class="knob">p(event) = 0.60</span><span class="knob">day ~ Gamma(1.3, 30)</span><span class="knob">≤ 1 event per customer</span></div>
+      <p class="why"><b>Why:</b> recent events are what a 90-day total blurs and a transaction sequence shows clearly. This is the signal the language model is meant to find.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ STAGE 2 ============ -->
+<section aria-labelledby="s2-h">
+  <div class="stage-head">
+    <span class="eyebrow">Stage 2</span>
+    <h2 id="s2-h">What they spend</h2>
+    <p class="muted">Every customer gets 150 days of history before their scoring date: a median of 205 transactions.</p>
+  </div>
+  <div class="cards">
+
+    <article class="card" id="r3">
+      <div class="card-title"><span class="num">03</span><h3>A catalogue of 61 merchants</h3></div>
+      <p class="rule">Every transaction comes from a named merchant. Each one has a category, a typical amount and spread, a price tier and real Brazilian statement wording (123 templates in all).</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Merchant</th><th>Category</th><th class="r">Typical R$</th><th>Tier</th></tr></thead>
+        <tbody>
+          <tr><td>Assaí</td><td>Grocery</td><td class="r">99</td><td>budget</td></tr>
+          <tr><td>St Marche</td><td>Grocery</td><td class="r">122</td><td>premium</td></tr>
+          <tr><td>iFood</td><td>Delivery</td><td class="r">49</td><td>mid</td></tr>
+          <tr><td>LATAM</td><td>Airline</td><td class="r">1,212</td><td>premium</td></tr>
+          <tr><td>Outback</td><td>Restaurant</td><td class="r">148</td><td>premium</td></tr>
+          <tr><td>Fees</td><td>Overdraft, late fees</td><td class="r">25</td><td>mid</td></tr>
+          <tr><td>Creditas Rápido</td><td>Quick loan (inflow)</td><td class="r">1,097</td><td>mid</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small muted">Typical amount = e<sup>μ</sup> for a customer on the median income.</p>
+    </article>
+
+    <article class="card" id="r4">
+      <div class="card-title"><span class="num">04</span><h3>Fixed monthly calendar</h3></div>
+      <p class="rule">Regular money lands on fixed days every month. Life events change it: a raise lifts salary 15–40%, and 35% of stressed customers lose their job, so salary stops.</p>
+      <div class="cal" id="cal" role="img" aria-label="A month with salary on day 5, investing on day 7, rent on day 8, electricity on 12, water on 18, phone on 20"></div>
+      <div class="cal-key">
+        <span><span class="d">1/5/10/15/30</span>Salary (payday by customer)</span>
+        <span><span class="d">payday + 2</span>Invest 8–30% of income</span>
+        <span><span class="d">5–10</span>Rent (55% pay rent)</span>
+        <span><span class="d">12 · 18 · 20</span>Electricity · water · phone</span>
+        <span><span class="d">any day</span>0–5 subscriptions</span>
+        <span><span class="d">day 1</span>Interest for savers</span>
+      </div>
+      <p class="why"><b>Why:</b> real statements are dominated by these rhythms, and their changes (salary up, salary gone, first investment) are strong signals.</p>
+    </article>
+
+    <article class="card wide" id="r5">
+      <div class="card-title"><span class="num">05</span><h3>Random daily spending, shaped by traits and events</h3></div>
+      <p class="rule">For each category and each day, the number of purchases is a Poisson draw. Its rate is a base rate × a trait multiplier × an event multiplier. After an event, behaviour changes from that day on.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Category</th><th class="r">Base rate / day</th><th>Driven by trait</th><th>Event effect after it happens</th></tr></thead>
+        <tbody>
+          <tr><td>Groceries</td><td class="r">0.18</td><td>kids +40%</td><td>—</td></tr>
+          <tr><td>Restaurants</td><td class="r">0.20</td><td>discretionary, income</td><td>stress <b>−40%</b></td></tr>
+          <tr><td>Delivery</td><td class="r">0.10</td><td>digital, discretionary</td><td>baby <b>×1.8</b></td></tr>
+          <tr><td>Pharmacy, labs</td><td class="r">0.04</td><td>age</td><td>baby <b>×3.5</b></td></tr>
+          <tr><td>Baby shops</td><td class="r">0.10</td><td>—</td><td>only after a baby</td></tr>
+          <tr><td>Fuel, auto parts</td><td class="r">0.08</td><td>owns a car</td><td>new car starts it</td></tr>
+          <tr><td>Overdraft and late fees</td><td class="r">0.01</td><td>stress</td><td>stress <b>×6</b></td></tr>
+          <tr><td>Quick loans received</td><td class="r">0.0015</td><td>stress</td><td>stress <b>×11</b></td></tr>
+          <tr><td>Debt collection</td><td class="r">0.001</td><td>stress</td><td>stress <b>×7</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="why"><b>Why:</b> one compact rule produces most of the 4.25 million rows. The multipliers are where the label signal is planted.</p>
+    </article>
+
+    <article class="card" id="r6">
+      <div class="card-title"><span class="num">06</span><h3>Income sets the price and the shop</h3></div>
+      <p class="rule">Richer customers pay more at the same merchant, and they pick premium merchants more often.</p>
+      <div class="formula">amount = e^( μ<sub>merchant</sub> + 0.45·log(income ÷ 4,000) + σ·ε )
+P(shop)  ∝ e^( 0.9 × income score × tier )</div>
+      <p class="small muted">Example from the sample: a customer earning R$21,585/month buys groceries at St Marche and Pão de Açúcar and eats at Outback. A customer earning R$1,949 shops at the corner mercadinho.</p>
+      <p class="why"><b>Why:</b> merchant names carry information that the profile's coarse totals throw away.</p>
+    </article>
+
+    <article class="card" id="r7">
+      <div class="card-title"><span class="num">07</span><h3>Trips as bursts</h3></div>
+      <p class="rule">Trips arrive as clusters, not single purchases. A flight is booked 7–40 days ahead, then a hotel within 4 days of that. An international trip adds 3–8 days of card use abroad. Stressed customers travel half as often.</p>
+      <div class="statement" aria-label="One international trip from the sample">
+        <div class="st-head"><span>Days ago</span><span>Description</span><span>R$</span></div>
+        <div class="st-row"><span class="d">107</span><span class="desc">LATAM AIRLINES 7856</span><span class="a">−10,963.07</span></div>
+        <div class="st-row"><span class="d">107</span><span class="desc">HOTEL AT BOOKING.COM</span><span class="a">−1,942.49</span></div>
+        <div class="st-row"><span class="d">90</span><span class="desc">IOF COMPRA INTERNACIONAL</span><span class="a">−437.75</span></div>
+        <div class="st-row"><span class="d">89</span><span class="desc">WISE FX ESP</span><span class="a">−167.42</span></div>
+        <div class="st-row"><span class="d">88</span><span class="desc">ZARA FRA</span><span class="a">−746.16</span></div>
+        <div class="st-row"><span class="d">86</span><span class="desc">TARGET ARG</span><span class="a">−140.28</span></div>
+      </div>
+      <p class="small muted">Trips per year ≈ 1.5 × e<sup>1.1·travel + 0.3·income − 0.4</sup>, capped at 5 per 150 days.</p>
+    </article>
+
+    <article class="card wide" id="r8">
+      <div class="card-title"><span class="num">08</span><h3>Messy statement text</h3></div>
+      <p class="rule">Descriptions are written the way a bank statement prints them: uppercase, with a city, a store number or a person's name filled into a template. 5% are cut short at 8–18 characters, as real statements often are.</p>
+      <div class="compare">
+        <div class="desc-flow">
+          <div class="step"><span class="k">Template</span><span class="v">UBER *TRIP {city}</span></div>
+          <div class="step"><span class="k">Filled</span><span class="v">UBER *TRIP CURITIBA</span></div>
+          <div class="step"><span class="k">Template</span><span class="v">IFOOD *{name}</span></div>
+          <div class="step"><span class="k">Filled</span><span class="v">IFOOD *JOAO S</span></div>
+        </div>
+        <div class="desc-flow">
+          <div class="step"><span class="k">Full</span><span class="v">ZE DELIVERY BEBIDAS</span></div>
+          <div class="step"><span class="k">Truncated</span><span class="v">ZE DELIVERY BEBI<span class="trunc">▌</span></span></div>
+          <div class="step"><span class="k">Full</span><span class="v">CLARO NET VIRTUA</span></div>
+          <div class="step"><span class="k">Truncated</span><span class="v">CLARO NET VIRTU<span class="trunc">▌</span></span></div>
+        </div>
+      </div>
+      <p class="why"><b>Why:</b> the language model reads this text directly, so it must be as noisy as the real thing. In the 20,000-customer dataset, 245,273 distinct descriptions appear across 4.25 million transactions.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ STAGE 3 ============ -->
+<section aria-labelledby="s3-h">
+  <div class="stage-head">
+    <span class="eyebrow">Stage 3</span>
+    <h2 id="s3-h">What's true</h2>
+  </div>
+  <div class="cards">
+
+    <article class="card wide" id="r9">
+      <div class="card-title"><span class="num">09</span><h3>A true chance for every product</h3></div>
+      <p class="rule">Each product has a simple scoring formula over the hidden traits and recent events. Random noise is added, and each product's intercept is tuned so that 8% of customers would take it on average. The result is each customer's true probability for all five products.</p>
+      <div class="formula"><span class="p">Travel card  </span> = 1.6·travel + 0.6·income − 0.5·stress
+<span class="p">Personal loan</span> = 1.4·stress + 1.6·<span class="e">[stress event ≤ 30 days]</span> − 0.6·saver
+<span class="p">Investments  </span> = 1.5·saver + 0.7·income + 1.2·<span class="e">[raise ≤ 30 days]</span> − 0.8·stress
+<span class="p">Insurance    </span> = 1.0·family + 1.6·<span class="e">[new car or baby ≤ 45 days]</span> + 0.3·age
+<span class="p">Cashback plus</span> = 1.2·discretionary share + 0.5·digital
+              + noise N(0, 0.5), then probability = sigmoid(score + intercept)</div>
+      <p class="why"><b>Why:</b> with the true probabilities known, we can compute the best AUC any model could reach (0.87). That tells us how much signal is left for a model to find.</p>
+    </article>
+
+    <article class="card wide" id="r10">
+      <div class="card-title"><span class="num">10</span><h3>One offer, one coin flip</h3></div>
+      <p class="rule">Like a real campaign, each customer is offered one product. 30% of offers are targeted (the product with the highest noisy score) and 70% are random. Whether the customer accepts is a coin flip weighted by their true chance for that product.</p>
+      <div class="bars" id="offer-bars"></div>
+      <p class="why"><b>Why:</b> real banks only see the outcome of the offer they made. Mixing targeted and random offers copies the bias of a real campaign, and gives an overall acceptance rate of 12.7%.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ STAGE 4 ============ -->
+<section aria-labelledby="s4-h">
+  <div class="stage-head">
+    <span class="eyebrow">Stage 4</span>
+    <h2 id="s4-h">What the models see</h2>
+  </div>
+  <div class="cards">
+
+    <article class="card wide" id="r11">
+      <div class="card-title"><span class="num">11</span><h3>A deliberately lossy profile</h3></div>
+      <p class="rule">The standard tabular model gets 20 profile features, built the way banks usually build them: 90-day totals in 8 coarse buckets. Declared fields are noisy, as they are in real life.</p>
+      <div class="compare">
+        <div>
+          <h4>What the transactions show</h4>
+          <div class="statement">
+            <div class="st-row hl"><span class="d">5</span><span class="desc">TARIFA CHEQUE ESPECIAL</span><span class="a">−10.46</span></div>
+            <div class="st-row hl"><span class="d">4</span><span class="desc">SERASA LIMPA NOME ACORDO</span><span class="a">−106.56</span></div>
+            <div class="st-row hl"><span class="d">4</span><span class="desc">EMPRESTIMO PESSOAL CREDITAS</span><span class="a in">+1,479.06</span></div>
+            <div class="st-row hl"><span class="d">1</span><span class="desc">MULTA ATRASO FATURA</span><span class="a">−21.49</span></div>
+          </div>
+        </div>
+        <div>
+          <h4>What the profile shows</h4>
+          <div class="tbl-wrap"><table>
+            <tbody>
+              <tr><td>spend_bills_90d</td><td class="r">2,932.61</td></tr>
+              <tr><td>overdraft_flag_90d</td><td class="r">1</td></tr>
+              <tr><td>declared_income</td><td class="r">1,900</td></tr>
+              <tr><td>has_kids_declared</td><td class="r">0 <span class="small muted">(really 1)</span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="small muted" style="margin-top:8px">Fees and debt collection are hidden inside "bills" next to rent and electricity. Quick loans vanish into total inflow.</p>
+        </div>
+      </div>
+      <div class="knobs"><span class="knob">8 coarse buckets (airline → "other")</span><span class="knob">declared income ±35% noise, 15% missing</span><span class="knob">kids flag wrong 20% of the time</span><span class="knob">90-day window</span></div>
+      <p class="why"><b>Why:</b> this copies how real banks summarise customers, so there is a fair gap for a sequence model to close.</p>
+    </article>
+
+    <article class="card wide" id="r12">
+      <div class="card-title"><span class="num">12</span><h3>Split by time, then checked</h3></div>
+      <p class="rule">Scoring dates are spread over 12 months. Models train on the first 8 months, are tuned on month 9 and are tested on months 10–12, so every test is on future customers. A validator then refuses to write data that breaks any rule.</p>
+      <div class="split" aria-label="Months 1 to 8 train, month 9 validation, months 10 to 12 test">
+        <div class="tr">1</div><div class="tr">2</div><div class="tr">3</div><div class="tr">4</div><div class="tr">5</div><div class="tr">6</div><div class="tr">7</div><div class="tr">8</div><div class="va">9</div><div class="te">10</div><div class="te">11</div><div class="te">12</div>
+      </div>
+      <div class="legend"><span><i class="sw" style="background:var(--accent-soft)"></i>train · 13,265 customers</span><span><i class="sw" style="background:color-mix(in srgb, var(--event) 25%, var(--surface))"></i>tune · 1,666</span><span><i class="sw" style="background:color-mix(in srgb, var(--pos) 25%, var(--surface))"></i>test · 5,069</span></div>
+      <ul class="checks">
+        <li>No transaction on or after a customer's scoring date (no leakage).</li>
+        <li>Transactions in time order; every customer has at least 20.</li>
+        <li>Train, tune and test months never overlap.</li>
+        <li>Acceptance rate between 6% and 25%; best possible AUC between 0.70 and 0.95.</li>
+        <li>Same seed (7) gives the same data every time; the config is hashed into <code>meta.json</code>.</li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ SHOWCASE ============ -->
+<section aria-labelledby="show-h">
+  <div class="stage-head">
+    <span class="eyebrow">Showcase</span>
+    <h2 id="show-h">Four customers, start to finish</h2>
+    <p class="muted">Real rows from a 3,000-customer sample generated with seed 7. Pick a customer to see their hidden traits, their statement and their true chance for each product.</p>
+  </div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="show" id="show">
+    <div class="panel" id="left"></div>
+    <div class="panel" id="right"></div>
+  </div>
+</section>
+
+<footer>
+  <span>Source: <code>synthgen/</code> in the nuFormer repository (personas.py, simulator.py, labels.py, features.py, validate.py). Amounts are in Brazilian reais (R$).</span>
+  <span>Known simplifications: the employer and city in a description are drawn fresh for every transaction, so one customer's salary can show a different company each month; each customer has at most one life event.</span>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  // ---------- rule 01: correlation heatmap (from personas.py) ----------
+  var T = ["inc","sav","trv","str","dig","dsc","age"];
+  var R = [
+    [1.00,0.40,0.40,-0.40,0.10,0.10,0.30],
+    [0.40,1.00,0.05,-0.45,0.00,-0.30,0.20],
+    [0.40,0.05,1.00,-0.20,0.20,0.30,0.00],
+    [-0.40,-0.45,-0.20,1.00,0.00,0.20,-0.10],
+    [0.10,0.00,0.20,0.00,1.00,0.20,-0.40],
+    [0.10,-0.30,0.30,0.20,0.20,1.00,-0.20],
+    [0.30,0.20,0.00,-0.10,-0.40,-0.20,1.00]
+  ];
+  var heat = document.querySelector(".heat");
+  R.forEach(function (row, i) {
+    var lab = document.createElement("div"); lab.className = "lab"; lab.textContent = T[i]; heat.appendChild(lab);
+    row.forEach(function (v, j) {
+      var c = document.createElement("div");
+      var col = v >= 0 ? "var(--accent)" : "var(--event)";
+      var pct = i === j ? 12 : Math.round(Math.abs(v) / 0.45 * 70);
+      c.style.background = "color-mix(in srgb, " + col + " " + pct + "%, var(--surface))";
+      c.style.color = pct > 45 ? "var(--surface)" : "var(--ink)";
+      c.textContent = i === j ? "·" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(2).replace(/^0/, "");
+      c.title = T[i] + " × " + T[j] + ": " + v.toFixed(2);
+      heat.appendChild(c);
+    });
+  });
+
+  // ---------- bars helper ----------
+  function bars(el, rows, max, fmt, evIdx) {
+    rows.forEach(function (r, i) {
+      var row = document.createElement("div"); row.className = "bar-row";
+      row.innerHTML = '<span></span><div class="bar-track"><div class="bar-fill"></div></div><span class="v"></span>';
+      row.children[0].textContent = r[0];
+      var f = row.querySelector(".bar-fill");
+      f.style.width = (r[1] / max * 100).toFixed(1) + "%";
+      if (evIdx && evIdx.indexOf(i) >= 0) f.classList.add("ev");
+      row.children[2].textContent = fmt(r[1]);
+      el.appendChild(row);
+    });
+  }
+  var pct = function (v) { return (v * 100).toFixed(1) + "%"; };
+  bars(document.getElementById("ev-bars"),
+    [["No event", 0.394], ["Money stress", 0.200], ["Pay raise", 0.195], ["New car", 0.112], ["New baby", 0.100]],
+    0.4, pct, [1, 2, 3, 4]);
+  bars(document.getElementById("offer-bars"),
+    [["Targeted (30%)", 0.233], ["Random (70%)", 0.082]], 0.25,
+    function (v) { return pct(v); });
+  var ob = document.getElementById("offer-bars");
+  var cap = document.createElement("p"); cap.className = "small muted"; cap.textContent = "Acceptance rate by offer type, from the 3,000-customer sample.";
+  ob.appendChild(cap);
+
+  // ---------- rule 04: calendar strip ----------
+  var cal = document.getElementById("cal");
+  var marks = { 1: ["in", "interest"], 5: ["in", "salary"], 7: ["out", "invest"], 8: ["out", "rent"], 12: ["out", "power"], 14: ["out", "Netflix"], 18: ["out", "water"], 20: ["out", "phone"], 23: ["out", "gym"] };
+  for (var d = 1; d <= 30; d++) {
+    var c = document.createElement("div");
+    c.textContent = d;
+    if (marks[d]) { c.className = marks[d][0]; c.title = "Day " + d + ": " + marks[d][1]; }
+    cal.appendChild(c);
+  }
+
+  // ---------- showcase ----------
+  var P = ["Travel card", "Personal loan", "Investments", "Insurance", "Cashback plus"];
+  var C = [
+    {
+      key: "stress", tab: "Money stress",
+      who: "Earns R$1,949 a month. Has kids, no car.",
+      event: "Money stress, 21 days before scoring",
+      traits: { "Income": -1.11, "Saver": -2.27, "Travel": -0.33, "Stress": 3.67, "Digital": -0.47, "Discretionary": 1.28 },
+      p: [0.002, 0.978, 0.000, 0.048, 0.019],
+      offer: "Travel card (random offer)", label: "Declined",
+      rules: "Rules 02 and 05: after the stress event, fees rise ×6, quick loans ×11 and collections ×7.",
+      evDay: 21,
+      tx: [
+        [8,-22.68,"99 TECNOLOGIA MANAUS","TRANSPORT"],[7,681.50,"ANTECIPACAO SAQUE FGTS","LOAN_IN"],[7,-14.88,"AMZN PRIME*1363","SUBSCRIPTION"],
+        [6,-8.34,"MERCADINHO JOAO S","GROCERY"],[5,-10.46,"TARIFA CHEQUE ESPECIAL","FEE"],[4,-106.56,"SERASA LIMPA NOME ACORDO","COLLECTION"],
+        [4,-108.77,"ACORDO DIVIDA ACME","COLLECTION"],[4,1479.06,"EMPRESTIMO PESSOAL CREDITAS","LOAN_IN"],[3,690.99,"PIX RECEBIDO SANTOS","PIX_IN"],
+        [2,588.67,"ANTECIPACAO SAQUE FGTS","LOAN_IN"],[2,-99.48,"OPENAI *CHATGPT SUBSCR","SUBSCRIPTION"],[2,-25.44,"IOF CHEQUE ESPECIAL","FEE"],
+        [1,-141.00,"SERASA LIMPA NOME ACORDO","COLLECTION"],[1,-21.49,"MULTA ATRASO FATURA","FEE"],[1,-90.64,"SAQUE ATM 0562","CASH"],
+        [1,-26.04,"RAPPI*LIMA","DELIVERY"],[1,-395.39,"ACORDO DIVIDA CNPJ 12345678","COLLECTION"],
+        [1,277.75,"TRANSF RECEBIDA COSTA","PIX_IN"]
+      ],
+      hl: ["FEE","COLLECTION","LOAN_IN"]
+    },
+    {
+      key: "raise", tab: "Pay raise",
+      who: "Earns R$5,173 a month. Has a car, pays rent.",
+      event: "Pay raise, 34 days before scoring",
+      traits: { "Income": 0.40, "Saver": 0.26, "Travel": null, "Stress": -0.94, "Digital": null, "Discretionary": null },
+      p: [0.123, 0.008, 0.133, 0.024, 0.048],
+      offer: "Travel card (random offer)", label: "Declined",
+      rules: "Rule 04: salary jumps 36% and the first investment follows. The raise was 34 days ago, just outside the 30-day window in rule 09, so it does not lift the investments score. Recency matters.",
+      evDay: 34,
+      tx: [
+        [142,-1738.42,"PIX ALUGUEL IMOB RECIFE","RENT"],[121,5336.89,"SALARIO TOTVS","SALARY"],[111,-1747.76,"PIX ALUGUEL IMOB FORTALEZA","RENT"],
+        [90,5192.62,"PAGTO SALARIO CNPJ 12345678","SALARY"],[80,-1737.25,"QUINTOANDAR ALUGUEL","RENT"],[59,5248.76,"SALARIO CONSTRUTORA ALFA","SALARY"],
+        [50,-1734.38,"QUINTOANDAR ALUGUEL","RENT"],[29,7129.50,"SALARIO LOGIST BRASIL","SALARY"],[29,-1236.06,"GUARDAR CAIXINHA","INVEST"],
+        [19,-1759.06,"PIX ALUGUEL IMOB MANAUS","RENT"]
+      ],
+      hl: ["INVEST"], hlRows: [7, 8],
+      note: "Showing salary, rent and investing only."
+    },
+    {
+      key: "baby", tab: "New baby",
+      who: "Earns R$3,965 a month. Has kids, no car.",
+      event: "New baby, 39 days before scoring",
+      traits: { "Income": -0.01, "Saver": -1.08, "Travel": 0.62, "Stress": 0.66, "Digital": 0.87, "Discretionary": 2.95 },
+      p: [0.041, 0.070, 0.002, 0.780, 0.814],
+      offer: "Travel card (random offer)", label: "Declined",
+      rules: "Rule 05: after the birth, baby shops start, pharmacy and lab visits rise ×3.5 and delivery ×1.8. Rule 09 lifts insurance for 45 days.",
+      evDay: 39,
+      tx: [
+        [25,-46.91,"IFOOD *JOAO S","DELIVERY"],[24,-59.44,"MATERNIDADE RJ","BABY"],[24,-83.60,"RAPPI BRASIL","DELIVERY"],
+        [22,-70.86,"CENTRAL DO BEBE","BABY"],[22,-203.20,"DASA LAB FORTALEZA","PHARMACY"],[19,-130.41,"PAGUE MENOS 4506","PHARMACY"],
+        [18,-60.26,"IFD*IFOOD.COM 1800","DELIVERY"],[17,-249.61,"FLEURY MEDICINA","PHARMACY"],[16,-163.81,"ZE DELIVERY BEBIDAS","DELIVERY"],
+        [13,-43.57,"ZE DELIVERY BEBI","DELIVERY"],[12,-139.03,"RAPPI*COSTA","DELIVERY"],[9,-108.42,"RAIA DROGASIL BELO HORIZONTE","PHARMACY"],
+        [9,-40.26,"IFOOD *PEDRO H","DELIVERY"],[3,-67.00,"ZE DELIVERY BEBIDAS","DELIVERY"]
+      ],
+      hl: ["BABY","PHARMACY"],
+      note: "Showing baby, pharmacy and delivery only."
+    },
+    {
+      key: "travel", tab: "Frequent traveller",
+      who: "Earns R$23,390 a month. Has a car.",
+      event: "No life event",
+      traits: { "Income": 2.72, "Saver": 0.25, "Travel": 4.50, "Stress": -1.11, "Digital": 2.00, "Discretionary": 1.17 },
+      p: [0.995, 0.005, 0.182, 0.017, 0.420],
+      offer: "Personal loan (random offer)", label: "Declined",
+      rules: "Rule 07: five trips in 150 days, each a flight, a hotel and a run of card use abroad. Rule 09 gives a 99.5% chance of taking a travel card.",
+      evDay: null,
+      tx: [
+        [107,-10963.07,"LATAM AIRLINES 7856","TRAVEL_AIR"],[107,-1942.49,"HOTEL AT BOOKING.COM","TRAVEL_HOTEL"],[90,-437.75,"IOF COMPRA INTERNACIONAL","TRAVEL_ABROAD"],
+        [88,-746.16,"ZARA FRA","TRAVEL_ABROAD"],[69,-10605.47,"LATAM AIRLINES 7284","TRAVEL_AIR"],[68,-1437.82,"AIRBNB * HM1958","TRAVEL_HOTEL"],
+        [57,-10827.76,"LATAM AIRLINES 9934","TRAVEL_AIR"],[54,-1216.33,"123MILHAS 7168","TRAVEL_HOTEL"],[49,-369.13,"WISE FX USA","TRAVEL_ABROAD"],
+        [47,-4815.46,"TAM LINHAS AEREAS","TRAVEL_AIR"],[35,-756.38,"WISE FX ITA","TRAVEL_ABROAD"],[30,-312.84,"STARBUCKS ITA","TRAVEL_ABROAD"],
+        [11,-4053.43,"GOL LINHAS AEREAS 9498","TRAVEL_AIR"],[11,-3047.11,"123MILHAS 3111","TRAVEL_HOTEL"],[1,-270.47,"STARBUCKS PRT","TRAVEL_ABROAD"]
+      ],
+      hl: ["TRAVEL_AIR","TRAVEL_HOTEL"],
+      note: "Showing travel transactions only."
+    }
+  ];
+
+  var tabs = document.getElementById("tabs");
+  var left = document.getElementById("left"), right = document.getElementById("right");
+  var money = function (v) {
+    var s = Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (v < 0 ? "−" : "+") + s;
+  };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function render(i) {
+    var c = C[i];
+    Array.prototype.forEach.call(tabs.children, function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); b.tabIndex = j === i ? 0 : -1; });
+    left.innerHTML = ""; right.innerHTML = "";
+
+    left.appendChild(el("h3", null, c.tab));
+    var kv = el("dl", "kv");
+    [["Customer", c.who], ["Life event", c.event], ["Offered", c.offer], ["Outcome", c.label]].forEach(function (r) {
+      kv.appendChild(el("dt", null, r[0])); kv.appendChild(el("dd", null, r[1]));
+    });
+    left.appendChild(kv);
+
+    left.appendChild(el("span", "eyebrow", "Hidden traits (z-score)"));
+    var tr = el("div", "traits");
+    Object.keys(c.traits).forEach(function (k) {
+      var v = c.traits[k]; if (v == null) return;
+      var row = el("div", "trait");
+      row.appendChild(el("span", null, k));
+      var ax = el("div", "axis"); var f = el("div", "tf");
+      var w = Math.min(Math.abs(v), 4) / 4 * 50;
+      f.style.width = w + "%"; f.style.left = (v >= 0 ? 50 : 50 - w) + "%";
+      if (v < 0) f.style.background = "var(--event)";
+      ax.appendChild(f); row.appendChild(ax);
+      row.appendChild(el("span", "v", (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(2)));
+      tr.appendChild(row);
+    });
+    left.appendChild(tr);
+
+    left.appendChild(el("span", "eyebrow", "True chance of taking each product"));
+    var pb = el("div", "bars");
+    c.p.forEach(function (v, j) {
+      var row = el("div", "bar-row");
+      row.appendChild(el("span", null, P[j]));
+      var t = el("div", "bar-track"); var f = el("div", "bar-fill"); f.style.width = (v * 100) + "%"; t.appendChild(f); row.appendChild(t);
+      row.appendChild(el("span", "v", (v * 100).toFixed(1) + "%"));
+      pb.appendChild(row);
+    });
+    left.appendChild(pb);
+    left.appendChild(el("p", "note", c.rules));
+
+    right.appendChild(el("span", "eyebrow", "Statement" + (c.note ? " · " + c.note : " · last transactions")));
+    var st = el("div", "statement");
+    var head = el("div", "st-head"); head.appendChild(el("span", null, "Days ago")); head.appendChild(el("span", null, "Description")); head.appendChild(el("span", null, "R$"));
+    st.appendChild(head);
+    var evShown = false;
+    c.tx.forEach(function (t, k) {
+      if (c.evDay != null && !evShown && t[0] <= c.evDay) {
+        var er = el("div", "st-row ev");
+        er.appendChild(el("span", "d", String(c.evDay)));
+        er.appendChild(el("span", "desc", "▸ " + c.event.split(",")[0] + " (hidden, not a transaction)"));
+        er.appendChild(el("span", "a", ""));
+        st.appendChild(er); evShown = true;
+      }
+      var row = el("div", "st-row" + ((c.hl.indexOf(t[3]) >= 0 || (c.hlRows && c.hlRows.indexOf(k) >= 0)) ? " hl" : ""));
+      row.appendChild(el("span", "d", String(t[0])));
+      var dsc = el("span", "desc", t[2]); dsc.appendChild(el("span", "cat", t[3].replace("_", " ").toLowerCase()));
+      row.appendChild(dsc);
+      row.appendChild(el("span", "a" + (t[1] > 0 ? " in" : ""), money(t[1])));
+      st.appendChild(row);
+    });
+    right.appendChild(st);
+    right.appendChild(el("p", "note", "Shaded rows are the ones the rules planted. Every one of these customers was offered a product at random and declined it, which is why the true probabilities matter for evaluation."));
+  }
+
+  C.forEach(function (c, i) {
+    var b = el("button", "tab", c.tab);
+    b.type = "button"; b.setAttribute("role", "tab"); b.id = "tab-" + c.key;
+    b.addEventListener("click", function () { render(i); try { localStorage.setItem("gen-tab", String(i)); } catch (e) {} });
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        var n = (i + (e.key === "ArrowRight" ? 1 : C.length - 1)) % C.length;
+        render(n); tabs.children[n].focus();
+      }
+    });
+    tabs.appendChild(b);
+  });
+  var start = 0;
+  try { var s = parseInt(localStorage.getItem("gen-tab"), 10); if (s >= 0 && s < C.length) start = s; } catch (e) {}
+  render(start);
+})();
+</script>

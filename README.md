@@ -26,11 +26,13 @@ The AUC error margin is about ±0.023 in round 2 and about ±0.006 in round 3. T
 
 ## Run
 
+Step-by-step commands for every module are in [`RUNNING.md`](RUNNING.md).
+
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt torch
 .venv/bin/python -m synthgen.generate --n-users 20000 --out data
 OUT=out_v5 DATA=data .venv/bin/python kaggle/nuformer_kaggle.py           # full run, 1 GPU
-OUT=out_smoke DATA=data .venv/bin/python kaggle/nuformer_kaggle.py --smoke   # tiny CPU check
+OUT=out_smoke DATA=data LGBM_JOBS=1 .venv/bin/python kaggle/nuformer_kaggle.py --smoke   # tiny CPU check
 ```
 
 `kaggle/kernel-metadata.json` runs the same script as a Kaggle kernel on a T4 (about 6.4 h). An L40S takes about 1.5 h. `nuformer_kaggle_v4.py` and `results_v4/` are the earlier v4 run, kept for comparison.
