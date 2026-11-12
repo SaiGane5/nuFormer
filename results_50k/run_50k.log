@@ -1,0 +1,213 @@
+[19:00:39] GPUs: ['NVIDIA L40S']
+[19:00:42] users (129588, 28) tx (27558118, 5)
+/home/ubuntu/nuformer_reco/kaggle/nuformer_kaggle.py:131: Pandas4Warning: Series.dt.weekday is deprecated and will be removed in a future version. Use Series.dt.day_of_week instead.
+  S["<DAY_1>"] + d.dt.day.to_numpy() - 1, S["<WD_0>"] + d.dt.weekday.to_numpy()], 1) + V0
+[19:01:27] prep done {'prep_sec': 39.9, 'n_users': 129588, 'n_tx': 27558118, 'unique_descriptions': 383145, 'tokens_per_tx_mean': 11.75, 'tx_in_context_mean': 86.7, 'tx_in_context_median': 87.0, 'seq_len_mean': 1018.6, 'amount_edges_log1p': [2.345, 2.809, 3.076, 3.324, 3.498, 3.674, 3.798, 3.954, 4.104, 4.25, 4.393, 4.535, 4.648, 4.793, 4.946, 5.112, 5.303, 5.542, 5.915, 6.996], 'example_tokens': [' RECE', 'B', 'IDA', ' AL', '<TX>', '<SIGN_IN>', '<AMT_3>', '<MON_11>', '<DAY_1>', '<WD_5>', 'RE', 'ND', 'IMENT', 'O', ' C', 'DB', '<TX>', '<SIGN_IN>', '<AMT_20>', '<MON_11>', '<DAY_5>', '<WD_2>', 'P', 'AG', 'TO', ' SAL', 'ARIO', ' CN', '<TX>', '<SIGN_OUT>', '<AMT_20>', '<MON_11>', '<DAY_5>', '<WD_2>', 'PIX', ' AL', 'UG', 'UEL', ' IM', 'OB']}
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 5346.65it/s]
+[19:01:36] joint steps_total 1563 trainable M 18.29
+[19:02:20] joint step 10/1563 loss 0.6789 4.3s/step
+[19:03:03] joint step 20/1563 loss 0.5956 4.3s/step
+[19:03:46] joint step 30/1563 loss 0.4518 4.3s/step
+[19:04:29] joint step 40/1563 loss 0.4361 4.3s/step
+[19:05:12] joint step 50/1563 loss 0.4485 4.3s/step
+[19:05:56] joint step 60/1563 loss 0.3227 4.3s/step
+[19:06:39] joint step 70/1563 loss 0.4576 4.3s/step
+[19:07:22] joint step 80/1563 loss 0.3263 4.3s/step
+[19:08:05] joint step 90/1563 loss 0.4232 4.3s/step
+[19:08:49] joint step 100/1563 loss 0.4366 4.3s/step
+[19:09:32] joint step 110/1563 loss 0.4 4.3s/step
+[19:10:15] joint step 120/1563 loss 0.3244 4.3s/step
+[19:10:59] joint step 130/1563 loss 0.3982 4.3s/step
+[19:11:42] joint step 140/1563 loss 0.3608 4.3s/step
+[19:12:25] joint step 150/1563 loss 0.4944 4.3s/step
+[19:13:09] joint step 160/1563 loss 0.3689 4.3s/step
+[19:13:52] joint step 170/1563 loss 0.333 4.3s/step
+[19:14:36] joint step 180/1563 loss 0.2773 4.3s/step
+[19:15:19] joint step 190/1563 loss 0.408 4.3s/step
+[19:16:02] joint step 200/1563 loss 0.3507 4.3s/step
+[19:16:45] joint step 210/1563 loss 0.2945 4.3s/step
+[19:17:29] joint step 220/1563 loss 0.3146 4.3s/step
+[19:18:12] joint step 230/1563 loss 0.3451 4.3s/step
+[19:18:56] joint step 240/1563 loss 0.4184 4.3s/step
+[19:19:39] joint step 250/1563 loss 0.356 4.3s/step
+[19:20:22] joint step 260/1563 loss 0.3829 4.3s/step
+[19:21:06] joint step 270/1563 loss 0.3452 4.3s/step
+[19:21:49] joint step 280/1563 loss 0.3452 4.3s/step
+[19:22:32] joint step 290/1563 loss 0.3722 4.3s/step
+[19:23:16] joint step 300/1563 loss 0.3636 4.3s/step
+[19:23:59] joint step 310/1563 loss 0.3407 4.3s/step
+[19:24:42] joint step 320/1563 loss 0.3081 4.3s/step
+[19:25:26] joint step 330/1563 loss 0.3674 4.3s/step
+[19:26:09] joint step 340/1563 loss 0.3775 4.3s/step
+[19:26:52] joint step 350/1563 loss 0.3562 4.3s/step
+[19:27:36] joint step 360/1563 loss 0.303 4.3s/step
+[19:28:19] joint step 370/1563 loss 0.3663 4.3s/step
+[19:29:03] joint step 380/1563 loss 0.357 4.3s/step
+[19:29:46] joint step 390/1563 loss 0.3721 4.3s/step
+[19:34:30] joint val AUC 0.7513
+[19:35:14] joint step 400/1563 loss 0.3611 5.0s/step
+[19:35:57] joint step 410/1563 loss 0.3125 5.0s/step
+[19:36:40] joint step 420/1563 loss 0.417 5.0s/step
+[19:37:23] joint step 430/1563 loss 0.3425 5.0s/step
+[19:38:07] joint step 440/1563 loss 0.3497 5.0s/step
+[19:38:50] joint step 450/1563 loss 0.3554 5.0s/step
+[19:39:33] joint step 460/1563 loss 0.3884 4.9s/step
+[19:40:16] joint step 470/1563 loss 0.3078 4.9s/step
+[19:41:00] joint step 480/1563 loss 0.3669 4.9s/step
+[19:41:43] joint step 490/1563 loss 0.3232 4.9s/step
+[19:42:26] joint step 500/1563 loss 0.3185 4.9s/step
+[19:43:09] joint step 510/1563 loss 0.3564 4.9s/step
+[19:43:53] joint step 520/1563 loss 0.2943 4.9s/step
+[19:44:36] joint step 530/1563 loss 0.3438 4.9s/step
+[19:45:19] joint step 540/1563 loss 0.3268 4.9s/step
+[19:46:02] joint step 550/1563 loss 0.3111 4.8s/step
+[19:46:46] joint step 560/1563 loss 0.3408 4.8s/step
+[19:47:29] joint step 570/1563 loss 0.2986 4.8s/step
+[19:48:12] joint step 580/1563 loss 0.3585 4.8s/step
+[19:48:56] joint step 590/1563 loss 0.3375 4.8s/step
+[19:49:39] joint step 600/1563 loss 0.3328 4.8s/step
+[19:50:22] joint step 610/1563 loss 0.3316 4.8s/step
+[19:51:06] joint step 620/1563 loss 0.2785 4.8s/step
+[19:51:49] joint step 630/1563 loss 0.3045 4.8s/step
+[19:52:33] joint step 640/1563 loss 0.3709 4.8s/step
+[19:53:16] joint step 650/1563 loss 0.3072 4.8s/step
+[19:53:59] joint step 660/1563 loss 0.3756 4.8s/step
+[19:54:43] joint step 670/1563 loss 0.3728 4.8s/step
+[19:55:26] joint step 680/1563 loss 0.3703 4.7s/step
+[19:56:09] joint step 690/1563 loss 0.3144 4.7s/step
+[19:56:53] joint step 700/1563 loss 0.3711 4.7s/step
+[19:57:36] joint step 710/1563 loss 0.3562 4.7s/step
+[19:58:19] joint step 720/1563 loss 0.3216 4.7s/step
+[19:59:03] joint step 730/1563 loss 0.3211 4.7s/step
+[19:59:46] joint step 740/1563 loss 0.3482 4.7s/step
+[20:00:29] joint step 750/1563 loss 0.3633 4.7s/step
+[20:01:13] joint step 760/1563 loss 0.3771 4.7s/step
+[20:01:56] joint step 770/1563 loss 0.3189 4.7s/step
+[20:02:39] joint step 780/1563 loss 0.3628 4.7s/step
+[20:07:22] joint val AUC 0.763
+[20:08:06] joint step 790/1563 loss 0.3029 5.0s/step
+[20:08:49] joint step 800/1563 loss 0.4032 5.0s/step
+[20:09:32] joint step 810/1563 loss 0.2915 5.0s/step
+[20:10:16] joint step 820/1563 loss 0.3627 5.0s/step
+[20:10:59] joint step 830/1563 loss 0.3412 5.0s/step
+[20:11:42] joint step 840/1563 loss 0.377 5.0s/step
+[20:12:26] joint step 850/1563 loss 0.2809 5.0s/step
+[20:13:09] joint step 860/1563 loss 0.3528 5.0s/step
+[20:13:53] joint step 870/1563 loss 0.3729 5.0s/step
+[20:14:36] joint step 880/1563 loss 0.3351 5.0s/step
+[20:15:19] joint step 890/1563 loss 0.2862 5.0s/step
+[20:16:03] joint step 900/1563 loss 0.3097 5.0s/step
+[20:16:46] joint step 910/1563 loss 0.3735 5.0s/step
+[20:17:29] joint step 920/1563 loss 0.322 4.9s/step
+[20:18:12] joint step 930/1563 loss 0.3524 4.9s/step
+[20:18:56] joint step 940/1563 loss 0.3084 4.9s/step
+[20:19:39] joint step 950/1563 loss 0.2632 4.9s/step
+[20:20:22] joint step 960/1563 loss 0.3022 4.9s/step
+[20:21:06] joint step 970/1563 loss 0.3094 4.9s/step
+[20:21:49] joint step 980/1563 loss 0.2564 4.9s/step
+[20:22:32] joint step 990/1563 loss 0.3311 4.9s/step
+[20:23:15] joint step 1000/1563 loss 0.356 4.9s/step
+[20:23:58] joint step 1010/1563 loss 0.2818 4.9s/step
+[20:24:42] joint step 1020/1563 loss 0.3096 4.9s/step
+[20:25:25] joint step 1030/1563 loss 0.3598 4.9s/step
+[20:26:09] joint step 1040/1563 loss 0.305 4.9s/step
+[20:26:52] joint step 1050/1563 loss 0.3152 4.9s/step
+[20:27:35] joint step 1060/1563 loss 0.3122 4.9s/step
+[20:28:18] joint step 1070/1563 loss 0.3386 4.9s/step
+[20:29:01] joint step 1080/1563 loss 0.3318 4.9s/step
+[20:29:44] joint step 1090/1563 loss 0.3606 4.9s/step
+[20:30:27] joint step 1100/1563 loss 0.32 4.8s/step
+[20:31:11] joint step 1110/1563 loss 0.3248 4.8s/step
+[20:31:54] joint step 1120/1563 loss 0.3432 4.8s/step
+[20:32:37] joint step 1130/1563 loss 0.3186 4.8s/step
+[20:33:20] joint step 1140/1563 loss 0.4073 4.8s/step
+[20:34:04] joint step 1150/1563 loss 0.3242 4.8s/step
+[20:34:47] joint step 1160/1563 loss 0.3259 4.8s/step
+[20:35:30] joint step 1170/1563 loss 0.2689 4.8s/step
+[20:40:15] joint val AUC 0.7829
+[20:40:58] joint step 1180/1563 loss 0.3173 5.1s/step
+[20:41:42] joint step 1190/1563 loss 0.3175 5.0s/step
+[20:42:25] joint step 1200/1563 loss 0.2997 5.0s/step
+[20:43:09] joint step 1210/1563 loss 0.3192 5.0s/step
+[20:43:52] joint step 1220/1563 loss 0.2747 5.0s/step
+[20:44:35] joint step 1230/1563 loss 0.3306 5.0s/step
+[20:45:19] joint step 1240/1563 loss 0.3142 5.0s/step
+[20:46:02] joint step 1250/1563 loss 0.3278 5.0s/step
+[20:46:46] joint step 1260/1563 loss 0.3056 5.0s/step
+[20:47:29] joint step 1270/1563 loss 0.3414 5.0s/step
+[20:48:12] joint step 1280/1563 loss 0.3158 5.0s/step
+[20:48:56] joint step 1290/1563 loss 0.3407 5.0s/step
+[20:49:39] joint step 1300/1563 loss 0.3019 5.0s/step
+[20:50:23] joint step 1310/1563 loss 0.2975 5.0s/step
+[20:51:06] joint step 1320/1563 loss 0.314 5.0s/step
+[20:51:49] joint step 1330/1563 loss 0.4254 5.0s/step
+[20:52:33] joint step 1340/1563 loss 0.3583 5.0s/step
+[20:53:16] joint step 1350/1563 loss 0.378 5.0s/step
+[20:53:59] joint step 1360/1563 loss 0.2848 5.0s/step
+[20:54:43] joint step 1370/1563 loss 0.249 5.0s/step
+[20:55:26] joint step 1380/1563 loss 0.3261 4.9s/step
+[20:56:10] joint step 1390/1563 loss 0.3441 4.9s/step
+[20:56:53] joint step 1400/1563 loss 0.3095 4.9s/step
+[20:57:36] joint step 1410/1563 loss 0.3062 4.9s/step
+[20:58:19] joint step 1420/1563 loss 0.3145 4.9s/step
+[20:59:03] joint step 1430/1563 loss 0.3471 4.9s/step
+[20:59:46] joint step 1440/1563 loss 0.3127 4.9s/step
+[21:00:29] joint step 1450/1563 loss 0.3138 4.9s/step
+[21:01:12] joint step 1460/1563 loss 0.3592 4.9s/step
+[21:01:55] joint step 1470/1563 loss 0.2917 4.9s/step
+[21:02:39] joint step 1480/1563 loss 0.3082 4.9s/step
+[21:03:22] joint step 1490/1563 loss 0.2662 4.9s/step
+[21:04:05] joint step 1500/1563 loss 0.2771 4.9s/step
+[21:04:49] joint step 1510/1563 loss 0.2773 4.9s/step
+[21:05:32] joint step 1520/1563 loss 0.33 4.9s/step
+[21:06:15] joint step 1530/1563 loss 0.2959 4.9s/step
+[21:06:59] joint step 1540/1563 loss 0.3343 4.9s/step
+[21:07:42] joint step 1550/1563 loss 0.3163 4.9s/step
+[21:08:25] joint step 1560/1563 loss 0.318 4.9s/step
+[21:13:09] joint val AUC 0.7837
+[22:22:56] joint done {'mode': 'joint', 'gpu': 'NVIDIA L40S', 'trainable_params_M': 18.29, 'val_auc_curve': [(390, 0.7513), (780, 0.763), (1170, 0.7829), (1560, 0.7837)], 'train_sec': 7903.4, 'steps': 1562, 'best_val_auc': 0.7837, 'peak_mem_GB': 37.51, 'infer_sec': 4176.4}
+[22:22:58] worker return codes [0]
+/home/ubuntu/nuformer_reco/.venv/lib/python3.14/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[22:23:29] LightGBM tabular (baseline) {'test_auc': 0.7894, 'test_pr_auc': 0.3896, 'ranking': {'hit@1': 0.5812, 'hit@2': 0.8165, 'ndcg@3': 0.8698, 'spearman': 0.661}, 'trees': 458}
+[22:24:30] REPORT {
+ "oracle (true propensity)": {
+  "test_auc": 0.8722,
+  "rel_auc_lift_vs_lgbm_%": 10.49
+ },
+ "LightGBM tabular (baseline)": {
+  "test_auc": 0.7894,
+  "ranking": {
+   "hit@1": 0.5812,
+   "hit@2": 0.8165,
+   "ndcg@3": 0.8698,
+   "spearman": 0.661
+  },
+  "rel_auc_lift_vs_lgbm_%": 0.0
+ },
+ "Frozen Qwen3 emb + tabular -> LightGBM (no fine-tune)": {},
+ "Late fusion: LoRA-seq emb + tabular -> LightGBM": {},
+ "LoRA Qwen3 sequence + offer (no tabular)": {},
+ "nuFormer joint fusion (LoRA Qwen3 + DCNv2/PLR)": {
+  "test_auc": 0.7696,
+  "ranking": {
+   "hit@1": 0.5098,
+   "hit@2": 0.7634,
+   "ndcg@3": 0.8315,
+   "spearman": 0.5971
+  },
+  "rel_auc_lift_vs_lgbm_%": -2.51
+ },
+ "DCNv2+PLR tabular only": {
+  "test_auc": 0.7776,
+  "ranking": {
+   "hit@1": 0.5467,
+   "hit@2": 0.7916,
+   "ndcg@3": 0.8526,
+   "spearman": 0.6258
+  },
+  "rel_auc_lift_vs_lgbm_%": -1.49
+ }
+}
+[22:24:30] total minutes 203.9

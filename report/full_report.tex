@@ -43,10 +43,10 @@ We built a system that reads a bank customer's recent transactions and profile, 
 \begin{enumerate}
 \item \textbf{Data.} A synthetic data generator, designed with a high-level and low-level design (HLD/LLD), produced 20,000 customers and 4.25 million transactions. Because the data is generated, the true chance of each customer taking each product is known.
 \item \textbf{Model.} We fine-tuned an open small language model, Qwen3-1.7B, using LoRA. The model reads each customer's transactions as a sequence of compact codes, and it is trained together with a small network that reads the customer's profile.
-\item \textbf{Training.} Two training rounds ran on Kaggle's free GPUs (two NVIDIA T4 cards, 16\,GB each). The second round took 6.4 hours in total.
-\item \textbf{Evaluation.} The model was compared with four other models on 5,069 customers from later months than the training data.
+\item \textbf{Training.} Two training rounds ran on Kaggle's free GPUs (two NVIDIA T4 cards, 16\,GB each); the second took 6.4 hours. A third round trained on 50,000 customers on one NVIDIA L40S (46\,GB) in 3.4 hours.
+\item \textbf{Evaluation.} The model was compared with four other models on customers from later months than the training data: 5,069 in rounds 1--2 and 74,588 in round 3.
 \end{enumerate}
-\textbf{Result.} Our model scored 0.736 AUC, 3.8\% below the standard LightGBM model (0.765). Transaction history on its own predicts take-up well above random (0.668), and the second round improved that figure from 0.623. To beat the standard model, the next step is to first teach the model general spending patterns on all transactions, and to train on more customers (Section~9).
+\textbf{Result.} Our model does not yet beat the standard LightGBM model. In round 2 (13,265 training customers) it scored 0.736 AUC, 3.8\% below LightGBM (0.765). In round 3, with 50,000 training customers, it scored 0.770, 2.5\% below LightGBM (0.789); the larger test set makes this gap clearly real (about $\pm$0.006). More data narrowed the gap, and transaction history on its own predicts take-up well above random (0.668). To beat the standard model, the next step is to first teach the model general spending patterns on all transactions (Section~9).
 
 %=====================================================================
 \section{Problem and goals}
@@ -428,12 +428,76 @@ Our model (joint) & 0.736 & 0.736 & +0.0005 ($-$0.009 to +0.010): no change \\
 \caption{Round 1 vs round 2 on the same test customers, with a paired bootstrap of 2,000 resamples.}
 \end{table}
 
+\subsection{Round 3: 50,000 training customers on an L40S}
+Round 3 tests the first two suggestions from round 2: more customers and a larger test set. We generated 300,000 customers with the same generator (seed 7, 63.8 million transactions) and used 50,000 for training, 5,000 for tuning and all 74,588 customers in months 10--12 for testing (12.3\% took the offered product). The model and settings were unchanged from round 2: a 1,024-code window, LoRA rank 16, one pass. The run used one NVIDIA L40S (46\,GB), which removed the need for gradient checkpointing. Only the joint model and the profile-only baselines were trained, so the two-step and transactions-only models have no round 3 score.
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}[t]{0.47\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[ybar=4pt, scale only axis, width=5.2cm, height=3.6cm, bar width=10pt,
+  ymin=0.7, ymax=0.8, ytick={0.7,0.72,0.74,0.76,0.78,0.8}, yticklabels={0.70,0.72,0.74,0.76,0.78,0.80}, ylabel={Test AUC},
+  symbolic x coords={LightGBM,Profile only,Our model}, xtick=data, enlarge x limits=0.25,
+  point meta=explicit symbolic, nodes near coords, nodes near coords style={font=\tiny},
+  area legend, legend style={font=\scriptsize,at={(0.5,1.03)},anchor=south,legend columns=2,draw=none},
+  every axis label/.style={font=\footnotesize}, tick label style={font=\footnotesize},
+  axis x line*=bottom, axis y line*=left, ymajorgrids, grid style={black!15}]
+\addplot[draw=black, fill=white] coordinates {(LightGBM,0.765)[0.765] (Profile only,0.733)[0.733] (Our model,0.736)[0.736]};
+\addplot[draw=black, fill=black!45] coordinates {(LightGBM,0.789)[0.789] (Profile only,0.778)[0.778] (Our model,0.770)[0.770]};
+\legend{Round 2 (13k), Round 3 (50k)}
+\end{axis}
+\end{tikzpicture}
+\caption{Test AUC with 13,265 vs 50,000 training customers.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[scale only axis, width=5.2cm, height=3.6cm, xmin=0, xmax=1600, ymin=0.74, ymax=0.8,
+  xtick={0,390,780,1170,1560}, xticklabels={0,390,780,1170,1560}, ytick={0.74,0.76,0.78,0.8}, yticklabels={0.74,0.76,0.78,0.80},
+  xlabel={Training updates}, ylabel={Validation AUC},
+  every axis label/.style={font=\footnotesize}, tick label style={font=\footnotesize},
+  axis x line*=bottom, axis y line*=left, ymajorgrids, grid style={black!15}]
+\addplot[thick, black, mark=*, mark size=1.8pt] coordinates {(390,0.7513) (780,0.763) (1170,0.7829) (1560,0.7837)};
+\end{axis}
+\end{tikzpicture}
+\caption{Validation AUC of our model during round 3; it levels off after about 1,200 updates.}
+\end{minipage}
+\end{figure}
+
+\begin{table}[!htb]
+\centering\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Model (round 3)} & \textbf{AUC} & \textbf{vs standard} & \textbf{PR-AUC} & \textbf{Top product right} & \textbf{Rank agreement} \\
+\midrule
+Standard model (LightGBM) & 0.789 & -- & 0.390 & 58\% & 0.66 \\
+Profile details only & 0.778 & $-$1.5\% & -- & 55\% & 0.63 \\
+\textbf{Our model (joint)} & \textbf{0.770} & \textbf{$-$2.5\%} & \textbf{0.367} & \textbf{51\%} & \textbf{0.60} \\
+Highest possible & 0.872 & +10.5\% & -- & 100\% & 1.00 \\
+\bottomrule
+\end{tabular}
+\caption{Round 3 results on 74,588 test customers (12.3\% would be random for PR-AUC). With this many customers, each AUC is accurate to about $\pm$0.006.}
+\end{table}
+
+\begin{tabularx}{\linewidth}{@{}L{4.6cm}X@{}}
+\toprule
+\textbf{Round 3 run} & \textbf{Value} \\
+\midrule
+Hardware & 1$\times$NVIDIA L40S, 46\,GB; peak memory 37.5\,GB \\
+Training & 1,562 updates (batch 8 $\times$ 4 accumulation), 18.3M trainable parameters, 132 minutes \\
+Scoring the test set & 70 minutes for 74,588 customers $\times$ 5 products \\
+Total run time & 204 minutes, against 386 minutes for round 2 on 2$\times$T4 \\
+\bottomrule
+\end{tabularx}
+
+Two cautions apply. Round 3 uses a different and larger test set, so its scores are not directly comparable customer by customer with round 2; the comparison is between the gaps to LightGBM within each round. LightGBM also improved with more data (0.765 to 0.789), which shows that part of every model's gain comes from the extra training customers rather than from the transactions.
+
 \subsection{What the results show}
 \begin{itemize}
 \item \textbf{Transaction history carries real signal.} On its own it reaches 0.668, and reading more history improved it clearly.
-\item \textbf{Our model does not yet beat the standard model.} It is 3.8\% below LightGBM. Its edge over the profile network alone (0.736 vs 0.733) is too small to separate from test noise.
-\item \textbf{Validation scores were still rising} at the end of the single training pass (0.711 to 0.720), which suggests more training would help.
-\item \textbf{The test set limits what we can measure.} With 5,069 customers, AUC is accurate to about $\pm$0.022. Gains smaller than that need a larger test set.
+\item \textbf{Our model does not yet beat the standard model.} It was 3.8\% below LightGBM in round 2 and 2.5\% below in round 3. With 74,588 test customers the round 3 gap (0.019) is about three times the measurement error, so it is real.
+\item \textbf{More data helps our model more than it helps LightGBM.} Our model gained 0.034 AUC from 4$\times$ more training customers; LightGBM gained 0.024. The gap closed by about a third.
+\item \textbf{In round 3 the transactions did not add to the profile.} Our model scored below the profile network alone (0.770 vs 0.778). On this synthetic data, the profile's 90-day totals already carry most of the signal the transactions hold, and one pass of fine-tuning is not enough for the language model to add more.
+\item \textbf{Validation scores levelled off} in round 3 (0.783 to 0.784 over the last 390 updates), so simply training longer on the same setup is unlikely to close the gap.
 \end{itemize}
 
 %=====================================================================
@@ -456,7 +520,7 @@ Round 1 ranked products worse than chance & One output per product instead of th
 %=====================================================================
 \section{Limitations}
 \begin{itemize}
-\item \textbf{Small training set.} 13,265 training customers and one pass of 414 updates.
+\item \textbf{One training pass.} Rounds 1--2 used 13,265 customers (414 updates) and round 3 used 50,000 (1,562 updates), each for a single pass.
 \item \textbf{No spending-pattern pre-training.} Qwen3 learned from general web text; it has never been taught how bank transactions usually follow each other.
 \item \textbf{Synthetic data.} The generator encodes our assumptions about behaviour. Real data will differ, and in this generator the 90-day totals already capture much of the signal.
 \item \textbf{One outcome per customer.} We only see whether the customer took the product they were offered, not the other four.
@@ -467,10 +531,10 @@ Round 1 ranked products worse than chance & One output per product instead of th
 \section{Suggested steps to improve the results}
 \begin{enumerate}
 \item \textbf{Teach the model spending patterns first.} Train it to predict the next transaction across all 4.25 million transactions (no labels needed), then fine-tune it for recommendation. This is expected to give the largest gain.
-\item \textbf{Use more customers and train longer.} Generate 50,000 or more training customers and train for three passes instead of one; validation scores were still rising.
-\item \textbf{Use a larger test set.} About 55,000 test customers are needed to measure a 1\% improvement reliably.
+\item \textbf{Use more customers (done in round 3).} 50,000 training customers narrowed the gap from 3.8\% to 2.5\% but did not close it. Scaling further, to 200,000+, is worth one more run; extra passes on the same data are less promising because validation scores levelled off.
+\item \textbf{Use a larger test set (done in round 3).} 74,588 test customers give about $\pm$0.006 accuracy, enough to measure a 1\% improvement.
 \item \textbf{Change one thing at a time.} Run separate rounds for window size, head design and learning rate, so each effect is known.
-\item \textbf{Get more computing time.} Round 2 used 6.4 of Kaggle's 12 free hours. Longer training needs a paid GPU or a multi-session setup that resumes from checkpoints.
+\item \textbf{Use a larger GPU (done in round 3).} One L40S ran 4$\times$ more training data in 3.4 hours, against 6.4 hours for round 2 on Kaggle's 2$\times$T4.
 \item \textbf{Try a longer window and a stronger profile model.} A 2,048-code window would cover about 4 months; adding LightGBM's predictions as an input to the fusion head may also help.
 \item \textbf{Test on real, anonymised bank data} to confirm the results hold outside the synthetic setting.
 \end{enumerate}
@@ -484,5 +548,7 @@ Round 1 ranked products worse than chance & One output per product instead of th
 \item For a quick local test without a GPU: run the training script with \texttt{-{}-smoke}.
 \end{enumerate}
 Total run time for round 2: 386 minutes. All random seeds are fixed (generator 7, training 42).
+
+Round 3: generate 300,000 customers with \texttt{python -m synthgen.generate\_big -{}-n-users 300000 -{}-seed 7 -{}-out data\_300k}, then run the training script on one GPU with \texttt{DATA=data\_300k N\_TRAIN=50000 N\_VAL=5000 MODES=joint}. Total run time: 204 minutes.
 
 \end{document}

@@ -11,6 +11,8 @@ out*/
 *.pt
 *.safetensors
 *.log
+!results_*/*.log
+*.npy
 # credentials
 kaggle.json
 .env

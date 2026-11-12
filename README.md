@@ -2,18 +2,20 @@
 
 This project predicts which of five bank products a customer will take up (travel card, personal loan, investments, insurance, cashback plus) from their transaction history. It is a small-scale replication of Nubank's nuFormer ([arXiv:2507.23267](https://arxiv.org/abs/2507.23267)), with Qwen3-1.7B + LoRA as the sequence backbone.
 
-## Results (v5, test months 10–12, 5,069 customers)
+## Results
 
-| Model | Test AUC |
-| --- | --- |
-| LightGBM on tabular features | 0.765 |
-| Late fusion (LLM embedding + tabular → LightGBM) | 0.757 |
-| Joint fusion (Qwen3 + DCNv2, end to end) | 0.736 |
-| DCNv2 tabular only | 0.733 |
-| Qwen3 sequence only | 0.668 |
-| Oracle (true propensities) | 0.867 |
+The model does not beat LightGBM yet. Training on 4× more customers narrowed the gap from 3.8% to 2.5%.
 
-The bootstrap 95% CI is about ±0.023. The full write-up is in `report/`.
+| Model (test AUC) | Round 2: 13k train / 5,069 test (2×T4) | Round 3: 50k train / 74,588 test (L40S) |
+| --- | --- | --- |
+| LightGBM on tabular features | 0.765 | 0.789 |
+| Late fusion (LLM embedding + tabular → LightGBM) | 0.757 | not run |
+| Joint fusion (Qwen3 + DCNv2, end to end) | 0.736 | 0.770 |
+| DCNv2 tabular only | 0.733 | 0.778 |
+| Qwen3 sequence only | 0.668 | not run |
+| Oracle (true propensities) | 0.867 | 0.872 |
+
+The AUC error margin is about ±0.023 in round 2 and about ±0.006 in round 3. The two rounds use different test sets, so compare each model's gap to LightGBM within a round. The full write-up is in `report/full_report.pdf`, and the round 3 metrics and log are in `results_50k/`.
 
 ## How it works
 
@@ -42,3 +44,4 @@ OUT=out_smoke DATA=data .venv/bin/python kaggle/nuformer_kaggle.py --smoke   # t
 | `kaggle/lgbm_curve.py` | LightGBM learning curve over training-set size |
 | `report/` | One-pager, full report and key-concepts notes (LaTeX + PDF) |
 | `results_v4/` | v4 run log, metrics and plots |
+| `results_50k/` | Round 3 (50k customers) metrics, plot and log |
